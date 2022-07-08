@@ -75,6 +75,11 @@ class PlantReader(BaseClass):
             if normalized_moistness < 0 :
                 normalized_moistness == 0
             moist_percentage = (1 - normalized_moistness) * 100
+            
+            if moist_percentage > 100 :
+                moist_percentage == 100
+            if moist_percentage < 0 :
+                moist_percentage == 0
             plant.moisture = moist_percentage
             new_plants[pin] = plant
         
