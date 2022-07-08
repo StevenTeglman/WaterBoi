@@ -19,6 +19,8 @@ cs = digitalio.DigitalInOut(board.D5)
 mcp = MCP.MCP3008(spi, cs)
 
 pins = sys.argv[1]
+pins = list(pins)
+pins = [int(x) for x in pins]
 
 def choose_pin(p):
     global mcp
@@ -47,7 +49,7 @@ pin_profiles = {}
 
 for p in pins:
     
-    print(f"\n[Starting Calibration for Pin]: {1}")
+    print(f"\n[Starting Calibration for Pin]: {p}")
     dry_samples = []
     wet_samples = []
     # create an analog input channel
