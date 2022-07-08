@@ -40,10 +40,11 @@ def main():
         raise ValueError
     
     sched = scheduler.Scheduler()
-    server_engine = ServerEngine(sched, read_interval=read_interval, pins=pins, calibrations=calibrations)
-    sched.send_mail(scheduler.Mail(server_engine.mailbox_name, server_engine.mailbox_name, "start", None))
-    
     plant_reader = PlantReader(sched)
+    server_engine = ServerEngine(sched, read_interval=read_interval, pins=pins, calibrations=calibrations)
+    sched.send_mail(scheduler.Mail(server_engine.mailbox_name, "main.py", "start", None))
+    
+
     
     try:
         sched.run()

@@ -11,13 +11,11 @@ import digitalio
 import board
 import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
-from util.moisture_calibrator import choose_pin
     
 
 class PlantReader(BaseClass):
     def __init__(self, sched):
         self.mailbox_name = "plant_reader"
-        super().__init__(sched)
         
         # create the spi bus
         self.spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
@@ -27,13 +25,18 @@ class PlantReader(BaseClass):
 
         # create the mcp object
         self.mcp = MCP.MCP3008(self.spi, self.cs)
+        super().__init__(sched)
+
+
         
     def _mail_handler(self, mail):
         if mail.mail_type == "read_plants_req":
             plants = self.read_plants(plants=mail.msg)
             mail = scheduler.Mail(mail.sender, self.mailbox_name, "read_plants_resp", plants)
             self.sched.send_mail(mail)
-            pass
+
+        else:
+            raise ValueError
 
     def choose_pin(self, p):
         
@@ -58,11 +61,12 @@ class PlantReader(BaseClass):
         else:
             raise ValueError
 
-    def read_plants(plants):
+    def read_plants(self, plants):
         new_plants = {}
-        for plant in plants:
+        print(plants)
+        for plant in plants.values():
             pin = plant.pin
-            chan = choose_pin(pin)
+            chan = self.choose_pin(pin)
             
             moistness = chan.value
             normalized_moistness = (moistness - plant.min_value) / (plant.max_value - plant.min_value)
