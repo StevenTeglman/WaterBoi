@@ -5,6 +5,8 @@ from engine.server_engine import ServerEngine
 import logging
 import json
 
+from plant_reader.plant_reader import PlantReader
+
 
 __author__ = "Steven Jack Teglman"
 __version__ = "0.0.1"
@@ -39,8 +41,9 @@ def main():
     
     sched = scheduler.Scheduler()
     server_engine = ServerEngine(sched, read_interval=read_interval, pins=pins, calibrations=calibrations)
-    
     sched.send_mail(scheduler.Mail(server_engine.mailbox_name, server_engine.mailbox_name, "start", None))
+    
+    plant_reader = PlantReader(sched)
     
     try:
         sched.run()
