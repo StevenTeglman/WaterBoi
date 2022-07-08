@@ -14,7 +14,7 @@ logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level='DEB
 parser = argparse.ArgumentParser(description='Test tool for long running bare metal modem tests.')
 parser.add_argument("-r", "--read_interval", required=True, type=int, help="How often the moister will be read, in seconds.")
 parser.add_argument("-p", "--pins", required=True, type=str, help="The pins that will be read, all one string. '123'")
-parser.add_argument("-c", "--calibrations", required=False, type=str, defaults="moisture_calibration.json", help="Moisture Sensor Calibration file")
+parser.add_argument("-c", "--calibrations", required=False, type=str, default="moisture_calibration.json", help="Moisture Sensor Calibration file")
 
 args = parser.parse_args()
 def main():
@@ -31,8 +31,8 @@ def main():
         raise ValueError
     
     try:
-        calibrations_file = open(args.calibrations)
-        calibrations = json.loads(calibrations_file)    
+        with open(args.calibrations, 'r') as fp:
+            calibrations = json.load(fp)    
     except:
         logging.error("Something is fucked with the calibration file")
         raise ValueError
