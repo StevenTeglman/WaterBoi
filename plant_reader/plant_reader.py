@@ -71,15 +71,12 @@ class PlantReader(BaseClass):
             moistness = chan.value
             normalized_moistness = (moistness - plant.min_value) / (plant.max_value - plant.min_value)
             if normalized_moistness > 1 :
-                normalized_moistness == 1
+                normalized_moistness = 1
             if normalized_moistness < 0 :
-                normalized_moistness == 0
+                normalized_moistness = 0
             moist_percentage = (1 - normalized_moistness) * 100
-            
-            if moist_percentage > 100 :
-                moist_percentage == 100
-            if moist_percentage < 0 :
-                moist_percentage == 0
+
+                
             plant.moisture = moist_percentage
             new_plants[pin] = plant
         
