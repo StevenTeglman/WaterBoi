@@ -84,4 +84,3 @@ dt = datetime.today().strftime('%d-%m-%Y--%H.%M.%S')
 filename = "calibration_data" + dt +".json"
 with open(filename, 'w') as fp:
     json.dump(pin_profiles, fp)
-    
