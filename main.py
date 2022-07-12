@@ -1,5 +1,6 @@
 import argparse
 from http import server
+from config.config import Config
 from engine import scheduler
 from engine.server_engine import ServerEngine
 import logging
@@ -40,9 +41,10 @@ def main():
         raise ValueError
     
     sched = scheduler.Scheduler()
-    plant_reader = PlantReader(sched)
+    PlantReader(sched)
+    Config(sched)
     server_engine = ServerEngine(sched, read_interval=read_interval, pins=pins, calibrations=calibrations)
-    sched.send_mail(scheduler.Mail(server_engine.mailbox_name, "main.py", "start", None))
+    sched.send_mail(scheduler.Mail(server_engine.mailbox_name, "main.py", "startup_sequence", None))
     
 
     
