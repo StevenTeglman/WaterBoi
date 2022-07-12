@@ -38,14 +38,15 @@ class ServerEngine(BaseClass):
     def _mail_handler(self, mail):
         if mail.mail_type == "startup_sequence":
             mail = scheduler.Mail("config", self.mailbox_name, "load_plants_req", list(self.plants.keys()))
-            self.sched.send_mail(self_mail)
+            self.sched.send_mail(mail)
         
         elif mail.mail_type == "load_plants_resp":
             saved_plants = mail.msg
-            for k, v in saved_plants.items():
-                self.plants[k].last_watered = v.get("last_watered")
-                self.plants[k].moisture_lower_limit = v.get("moisture_lower_limit")
-                self.plants[k].moisture = v.get("moisture")
+            if saved_plants:
+                for k, v in saved_plants.items():
+                    self.plants[k].last_watered = v.get("last_watered")
+                    self.plants[k].moisture_lower_limit = v.get("moisture_lower_limit")
+                    self.plants[k].moisture = v.get("moisture")
             
             mail = scheduler.Mail(self.mailbox_name, self.mailbox_name, "read_moisture", None)
             self.sched.send_mail(mail)
@@ -57,8 +58,10 @@ class ServerEngine(BaseClass):
             moist_mail = scheduler.Mail("plant_reader", self.mailbox_name, "read_plants_req", self.plants)
             self.sched.send_mail(moist_mail)
             
-        elif mail.mail_type == "read_moisture_resp":
+        elif mail.mail_type == "read_plants_resp":
+            logging.error("We got herem")
             self.plants = mail.msg
+
             mail = scheduler.Mail("config", self.mailbox_name, "save_plants_req", self.plants)
             self.sched.send_mail(mail)
             
@@ -74,6 +77,6 @@ class ServerEngine(BaseClass):
         print(" -----------------")
         print("|  PLANT READOUT  |")
         print(" -----------------")
-        for plant in self.plants:
+        for plant in self.plants.values():
             print(f"[Plant No.]: {plant.pin} | [Plant Moistness]: {plant.moisture}")
         print(" -----------------")

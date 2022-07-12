@@ -4,6 +4,8 @@ from engine import scheduler
 from util.base_class import BaseClass
 import os
 from util.util import remove_empty
+import logging
+
 
 class Config(BaseClass):
     def __init__(self, sched):
@@ -26,12 +28,21 @@ class Config(BaseClass):
 
 def load_plants(pins):
     current_directory = os.getcwd()
-    plant_data = current_directory + "\\config\\plant_data.json"
+    logging.error("We got here1")
+    plant_data = current_directory + "/config/plant_data.json"
+    logging.error(plant_data)
+    
+    logging.error("We got here2")
     with open(plant_data, "r") as jsonFile:
         data = json.load(jsonFile)
     filtered_data = {}
-    for p in pins:
-        filtered_data[p] = data[p]
+    logging.error("We got here3")
+    if data:
+        for k,v in data.items():
+            filtered_data[k] = v
+    else:
+        filtered_data = None
+    logging.error("We got here4")
     return filtered_data
 
 def save_plants(plant_dict):
@@ -47,7 +58,7 @@ def save_plants(plant_dict):
         data_to_save[new_plant["pin"]] = new_plant
         
     current_directory = os.getcwd()
-    plant_data = current_directory + "\\config\\plant_data.json"
+    plant_data = current_directory + "/config/plant_data.json"
     updated_data = {}
     with open(plant_data, "r") as jsonFile:
         old_data = json.load(jsonFile)
@@ -55,3 +66,4 @@ def save_plants(plant_dict):
     
     with open(plant_data, "w") as jsonFile:
         json.dump(updated_data, jsonFile)
+

@@ -39,7 +39,7 @@ class PlantReader(BaseClass):
             raise ValueError
 
     def choose_pin(self, p):
-        
+        p = int(p)
         if p == 0:
             return AnalogIn(self.mcp, MCP.P0)
         elif p == 1:
@@ -63,10 +63,10 @@ class PlantReader(BaseClass):
 
     def read_plants(self, plants):
         new_plants = {}
-        print(plants)
         for plant in plants.values():
             pin = plant.pin
             chan = self.choose_pin(pin)
+
             
             moistness = chan.value
             normalized_moistness = (moistness - plant.min_value) / (plant.max_value - plant.min_value)
@@ -76,7 +76,6 @@ class PlantReader(BaseClass):
                 normalized_moistness = 0
             moist_percentage = (1 - normalized_moistness) * 100
 
-                
             plant.moisture = moist_percentage
             new_plants[pin] = plant
         
