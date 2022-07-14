@@ -1,5 +1,1 @@
-{
-	"1":{
-		"moisture_lower_limit":50
-	}
-}
+{"1": {"pin": "1", "last_watered": null, "moisture_lower_limit": 50, "moisture": 4.086021505376348}, "2": {"pin": "2", "last_watered": null, "moisture_lower_limit": null, "moisture": 9.03225806451613}, "3": {"pin": "3", "last_watered": null, "moisture_lower_limit": null, "moisture": 3.862660944206009}, "4": {"pin": "4", "last_watered": null, "moisture_lower_limit": null, "moisture": 4.741379310344829}}

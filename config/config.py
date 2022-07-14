@@ -1,4 +1,5 @@
 from heapq import merge
+import sys
 import json
 from engine import scheduler
 from util.base_class import BaseClass
@@ -21,7 +22,7 @@ class Config(BaseClass):
             self.sched.send_mail(mail)
         
         elif mail.mail_type == "save_plants_req":
-            pass
+            save_plants(mail.msg)
         
         else:
             raise ValueError
@@ -45,7 +46,7 @@ def load_plants(pins):
 def save_plants(plant_dict):
     try:
         data_to_save = {}
-        for p in plant_dict:
+        for p in plant_dict.values():
             new_plant = remove_empty(p)
             plant_to_save = {
                 "pin": new_plant.get("pin"),
@@ -69,4 +70,4 @@ def save_plants(plant_dict):
     except Exception as e:
         logging.error("Unable to save")
         logging.error(e)
-
+        logging.error("Error on line {}".format(sys.exc_info()[-1].tb_lineno))
