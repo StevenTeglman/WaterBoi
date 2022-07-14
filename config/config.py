@@ -28,42 +28,45 @@ class Config(BaseClass):
 
 def load_plants(pins):
     current_directory = os.getcwd()
-    logging.error("We got here1")
-    plant_data = current_directory + "/config/plant_data.json"
-    logging.error(plant_data)
-    
-    logging.error("We got here2")
-    with open(plant_data, "r") as jsonFile:
+    plant_data_file = current_directory + "/config/plant_data.json"
+
+    with open(plant_data_file, "r") as jsonFile:
         data = json.load(jsonFile)
     filtered_data = {}
-    logging.error("We got here3")
     if data:
         for k,v in data.items():
             filtered_data[k] = v
     else:
         filtered_data = None
-    logging.error("We got here4")
+    logging.debug("[Plant Data Loaded]")
     return filtered_data
 
+
 def save_plants(plant_dict):
-    data_to_save = {}
-    for p in plant_dict:
-        new_plant = remove_empty(p)
-        new_plant = {
-            "pin":new_plant["pin"],
-            "last_watered":new_plant["last_watered"],
-            "moisture_lower_limit":new_plant["moisture_lower_limit"],
-            "moisture":new_plant["moisture"],
-            }
-        data_to_save[new_plant["pin"]] = new_plant
-        
-    current_directory = os.getcwd()
-    plant_data = current_directory + "/config/plant_data.json"
-    updated_data = {}
-    with open(plant_data, "r") as jsonFile:
-        old_data = json.load(jsonFile)
-        updated_data = old_data | data_to_save
-    
-    with open(plant_data, "w") as jsonFile:
-        json.dump(updated_data, jsonFile)
+    try:
+        data_to_save = {}
+        for p in plant_dict:
+            new_plant = remove_empty(p)
+            plant_to_save = {
+                "pin": new_plant.get("pin"),
+                "last_watered": new_plant.get("last_watered"),
+                "moisture_lower_limit": new_plant.get("moisture_lower_limit"),
+                "moisture": new_plant.get("moisture"),
+                }
+            data_to_save[plant_to_save["pin"]] = plant_to_save
+
+        current_directory = os.getcwd()
+        plant_data_file = current_directory + "/config/plant_data.json"
+        with open(plant_data_file, "r") as jsonFile:
+            old_data = json.load(jsonFile)
+            updated_data = old_data | data_to_save
+
+        with open(plant_data_file, "w") as jsonFile:
+            json.dump(updated_data, jsonFile)
+
+        return True
+
+    except Exception as e:
+        logging.error("Unable to save")
+        logging.error(e)
 

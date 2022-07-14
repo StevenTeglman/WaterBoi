@@ -5,14 +5,15 @@ import os
 from engine import scheduler
 from util.base_class import BaseClass
 
+
 @dataclass
 class Plant:
-    pin:str
-    max_value:int
-    min_value:int
-    last_watered:datetime = None
-    moisture_lower_limit:int = None
-    moisture:float = None
+    pin: str
+    max_value: int
+    min_value: int
+    last_watered: datetime = None
+    moisture_lower_limit: int = None
+    moisture: float = None
     
     
 class ServerEngine(BaseClass):
@@ -33,7 +34,6 @@ class ServerEngine(BaseClass):
                 max_value=self.calibrations[p]["max_value"],
                 min_value=self.calibrations[p]["min_value"])
             self.plants[p] = plant
-        
 
     def _mail_handler(self, mail):
         if mail.mail_type == "startup_sequence":
@@ -59,18 +59,16 @@ class ServerEngine(BaseClass):
             self.sched.send_mail(moist_mail)
             
         elif mail.mail_type == "read_plants_resp":
-            logging.error("We got herem")
+            logging.error("We got to read_plants_resp")
             self.plants = mail.msg
 
             mail = scheduler.Mail("config", self.mailbox_name, "save_plants_req", self.plants)
             self.sched.send_mail(mail)
             
             self.handle_readings()
-            
-        
+
         else:
             raise ValueError
-
 
     def handle_readings(self):
         os.system('cls||clear')
