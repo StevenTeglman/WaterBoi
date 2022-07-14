@@ -14,6 +14,7 @@ class Plant:
     last_watered: datetime = None
     moisture_lower_limit: int = None
     moisture: float = None
+    pump_GPIO: int = None
     
     
 class ServerEngine(BaseClass):
@@ -64,17 +65,29 @@ class ServerEngine(BaseClass):
 
             mail = scheduler.Mail("config", self.mailbox_name, "save_plants_req", self.plants)
             self.sched.send_mail(mail)
-            
+
             self.handle_readings()
+
+        elif mail.mail_type == "water_plants.resp":
+            for k, v in mail.msg.items():
+                self.plants[k] = v
 
         else:
             raise ValueError
 
     def handle_readings(self):
-        os.system('cls||clear')
+        needs_watering = {}
+
+        # os.system('cls||clear')
         print(" -----------------")
         print("|  PLANT READOUT  |")
         print(" -----------------")
         for plant in self.plants.values():
             print(f"[Plant No.]: {plant.pin} | [Plant Moistness]: {plant.moisture}")
+            if plant.moisture < plant.moisture_lower_limit:
+                needs_watering[plant.pin] = plant
         print(" -----------------")
+        mail = scheduler.Mail("pumps", self.mailbox_name, "water_plants_req", needs_watering)
+        self.sched.send_mail(mail)
+
+

@@ -13,6 +13,8 @@ __author__ = "Steven Jack Teglman"
 __version__ = "0.0.1"
 __email__ = "steventeglman@gmail.com"
 
+from pumps.pumps import Pumps
+
 logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', level='DEBUG')
 parser = argparse.ArgumentParser(description='Test tool for long running bare metal modem tests.')
 parser.add_argument("-r", "--read_interval", required=True, type=int, help="How often the moister will be read, in seconds.")
@@ -43,6 +45,7 @@ def main():
     sched = scheduler.Scheduler()
     PlantReader(sched)
     Config(sched)
+    Pumps(sched)
     server_engine = ServerEngine(sched, read_interval=read_interval, pins=pins, calibrations=calibrations)
     sched.send_mail(scheduler.Mail(server_engine.mailbox_name, "main.py", "startup_sequence", None))
     
