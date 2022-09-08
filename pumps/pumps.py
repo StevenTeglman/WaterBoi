@@ -1,4 +1,5 @@
 import datetime
+from datetime import timedelta
 import logging
 
 from engine import scheduler
@@ -16,8 +17,10 @@ class Pumps(BaseClass):
         if mail.mail_type == "water_plants_req":
             watered_plants = {}
             for plant in mail.msg.values:
-                w_plant = water_plant(plant)
-                watered_plants[w_plant.pin] = w_plant
+                one_day_ago = datetime.datetime.now() - timedelta(days = 1)
+                if plant.last_watered < one_day_ago:
+                    w_plant = water_plant(plant)
+                    watered_plants[w_plant.pin] = w_plant
 
             mail = scheduler.Mail(mail.sender, self.mailbox_name, "water_plants_resp", watered_plants)
             self.sched.send_mail(mail)
